@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Project Intake — ScaleEveryday</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #111111;
+      --mid: #555555;
+      --light: #888888;
+      --rule: #e2e2e2;
+      --bg: #fafaf9;
+      --surface: #ffffff;
+      --accent-light: #f0f0ee;
+      --green: #16a34a;
+      --red: #dc2626;
+      --radius: 8px;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--surface);
+      padding: 18px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-inner {
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header-brand {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+    }
+    .header-sub {
+      font-size: 15px;
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .progress-wrap {
+      height: 2px;
+      background: transparent;
+      margin-top: 14px;
+    }
+    .progress-bar {
+      height: 2px;
+      background: var(--ink);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* ── Page ── */
+    .page {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 48px 24px 100px;
+    }
+
+    /* ── Intro ── */
+    .intro {
+      margin-bottom: 44px;
+    }
+    .intro h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .intro p {
+      font-size: 15px;
+      color: var(--mid);
+      max-width: 480px;
+      line-height: 1.7;
+    }
+
+    /* ── Sections ── */
+    .section { margin-bottom: 44px; }
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 22px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .section-num {
+      width: 24px; height: 24px;
+      background: var(--ink);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Fields ── */
+    .field { margin-bottom: 18px; }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 500px) { .row { grid-template-columns: 1fr; } }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    label .req { color: var(--red); margin-left: 2px; }
+    label .opt { color: var(--light); font-weight: 400; font-size: 12px; margin-left: 4px; }
+    .hint { font-size: 12px; color: var(--light); margin-top: 4px; line-height: 1.5; }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="url"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 13px;
+      border: 1.5px solid var(--rule);
+      border-radius: var(--radius);
+      font-family: var(--font);
+      font-size: 14px;
+      color: var(--ink);
+      background: var(--surface);
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--ink);
+      box-shadow: 0 0 0 3px rgba(17,17,17,0.06);
+    }
+    textarea { resize: vertical; min-height: 85px; line-height: 1.6; }
+    select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 36px;
+      cursor: pointer;
+    }
+
+    /* Repeater */
+    .repeater { display: flex; flex-direction: column; gap: 8px; }
+    .rep-item { display: flex; gap: 8px; }
+    .rep-item input { flex: 1; }
+    .btn-rm {
+      flex-shrink: 0;
+      width: 36px; height: 38px;
+      border: 1.5px solid var(--rule);
+      background: var(--surface);
+      border-radius: var(--radius);
+      cursor: pointer;
+      color: var(--light);
+      font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-rm:hover { border-color: var(--red); color: var(--red); }
+    .btn-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+      padding: 6px 13px;
+      border: 1.5px dashed var(--rule);
+      border-radius: var(--radius);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--mid);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      font-family: var(--font);
+    }
+    .btn-add:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* Checkbox pills */
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .pill-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 13px;
+      border: 1.5px solid var(--rule);
+      border-radius: 99px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .pill-label input { display: none; }
+    .pill-label:hover { border-color: var(--ink); background: var(--accent-light); }
+    .pill-label.checked { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+    /* Color */
+    .color-row { display: flex; align-items: center; gap: 10px; }
+    .color-row input[type="color"] {
+      width: 42px; height: 38px;
+      padding: 3px;
+      border: 1.5px solid var(--rule);
+      border-radius: var(--radius);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .color-row input[type="text"] { max-width: 130px; }
+
+    /* Validation */
+    .err { font-size: 12px; color: var(--red); margin-top: 4px; display: none; }
+    .err.show { display: block; }
+    input.invalid, textarea.invalid, select.invalid { border-color: var(--red); }
+
+    /* Submit */
+    .submit-box {
+      background: var(--surface);
+      border: 1.5px solid var(--rule);
+      border-radius: 12px;
+      padding: 30px 28px;
+      text-align: center;
+    }
+    .submit-box h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
+    .submit-box p { font-size: 14px; color: var(--mid); margin-bottom: 22px; }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ink);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 13px 30px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.82; }
+
+    .btn-sec {
+      display: inline-flex;
+      align-items: center;
+      background: transparent;
+      color: var(--mid);
+      font-family: var(--font);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 9px 18px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--rule);
+      cursor: pointer;
+      margin-left: 10px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .btn-sec:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* Modal */
+    .overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .overlay.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      border-radius: 12px;
+      width: 100%;
+      max-width: 600px;
+      max-height: 84vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.18);
+      overflow: hidden;
+    }
+    .modal-hd {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--rule);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-hd h3 { font-size: 15px; font-weight: 700; }
+    .modal-close {
+      width: 30px; height: 30px;
+      border: 1.5px solid var(--rule);
+      border-radius: var(--radius);
+      background: transparent;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--mid);
+    }
+    .modal-close:hover { color: var(--ink); border-color: var(--ink); }
+    .modal-body { flex: 1; overflow-y: auto; padding: 18px 22px; }
+    .modal-out {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      line-height: 1.75;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .modal-ft {
+      padding: 14px 22px;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .copied { font-size: 13px; color: var(--green); font-weight: 500; display: none; }
+    .copied.show { display: block; }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <span class="header-brand">ScaleEveryday</span>
+    <span class="header-sub">New Project Intake</span>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+</header>
+
+<div class="page">
+
+  <div class="intro">
+    <h1>Let's build your new website.</h1>
+    <p>Answer a few quick questions so we can get started. Required fields are marked <span style="color:var(--red)">*</span>.</p>
+  </div>
+
+  <form id="form" novalidate>
+
+    <!-- 1. Business -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">1</div>
+        <div class="section-title">Your Business</div>
+      </div>
+
+      <div class="field">
+        <label>Business Name <span class="req">*</span></label>
+        <input type="text" name="businessName" placeholder="e.g. Karizma Signs" required />
+        <div class="err" id="e-businessName">Required.</div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Business Type <span class="req">*</span></label>
+          <select name="businessType" id="businessTypeSelect" onchange="toggleOtherType()" required>
+            <option value="">Select…</option>
+            <optgroup label="Food & Hospitality">
+              <option>Restaurant / Café</option>
+              <option>Bar / Lounge</option>
+              <option>Bakery / Dessert Shop</option>
+              <option>Food Truck</option>
+              <option>Catering Service</option>
+              <option>Hotel / Motel / B&amp;B</option>
+            </optgroup>
+            <optgroup label="Signs & Print">
+              <option>Sign & Graphics Company</option>
+              <option>Print Shop</option>
+              <option>Embroidery / Apparel</option>
+              <option>Promotional Products</option>
+            </optgroup>
+            <optgroup label="Health & Beauty">
+              <option>Medical / Dental Practice</option>
+              <option>Pharmacy / Drugstore</option>
+              <option>Chiropractic / Physical Therapy</option>
+              <option>Mental Health / Therapy</option>
+              <option>Hair Salon / Barbershop</option>
+              <option>Nail Salon</option>
+              <option>Spa / Massage</option>
+              <option>Fitness / Gym / Personal Training</option>
+              <option>Yoga / Pilates Studio</option>
+            </optgroup>
+            <optgroup label="Home & Trades">
+              <option>General Contractor</option>
+              <option>Plumbing</option>
+              <option>Electrical</option>
+              <option>HVAC</option>
+              <option>Roofing</option>
+              <option>Landscaping / Lawn Care</option>
+              <option>Cleaning Service</option>
+              <option>Moving Company</option>
+              <option>Interior Design</option>
+              <option>Painting</option>
+              <option>Flooring</option>
+              <option>Pest Control</option>
+            </optgroup>
+            <optgroup label="Automotive">
+              <option>Auto Repair / Mechanic</option>
+              <option>Auto Detailing</option>
+              <option>Car Dealership</option>
+              <option>Towing Service</option>
+              <option>Tire Shop</option>
+            </optgroup>
+            <optgroup label="Professional Services">
+              <option>Law Firm / Attorney</option>
+              <option>Accounting / CPA</option>
+              <option>Financial Advisor</option>
+              <option>Insurance Agency</option>
+              <option>Real Estate Agency</option>
+              <option>Mortgage / Lending</option>
+              <option>Marketing / Advertising Agency</option>
+              <option>IT / Tech Support</option>
+              <option>Staffing / Recruiting</option>
+              <option>Consulting</option>
+              <option>Translation / Interpretation</option>
+            </optgroup>
+            <optgroup label="Retail & E-commerce">
+              <option>Retail Store</option>
+              <option>Clothing / Fashion</option>
+              <option>Jewelry Store</option>
+              <option>Electronics Store</option>
+              <option>Furniture / Home Goods</option>
+              <option>Gift Shop / Boutique</option>
+              <option>E-commerce (Online Only)</option>
+              <option>Grocery / Supermarket</option>
+            </optgroup>
+            <optgroup label="Education & Childcare">
+              <option>School / Academy</option>
+              <option>Tutoring / Test Prep</option>
+              <option>Daycare / Childcare</option>
+              <option>Driving School</option>
+              <option>Music / Art School</option>
+              <option>Martial Arts / Dance Studio</option>
+            </optgroup>
+            <optgroup label="Events & Entertainment">
+              <option>Event Planning / Wedding Planner</option>
+              <option>Photography / Videography</option>
+              <option>DJ / Entertainment</option>
+              <option>Party Rental</option>
+              <option>Nightclub / Venue</option>
+            </optgroup>
+            <optgroup label="Nonprofit & Community">
+              <option>Nonprofit Organization</option>
+              <option>Religious Organization / Church</option>
+              <option>Community Center</option>
+            </optgroup>
+            <option value="Other">Other</option>
+          </select>
+          <div class="err" id="e-businessType">Required.</div>
+        </div>
+        <div class="field">
+          <label>Year Founded <span class="opt">optional</span></label>
+          <input type="text" name="yearFounded" placeholder="e.g. 2005" />
+        </div>
+      </div>
+
+      <div class="field" id="otherTypeField" style="display:none">
+        <label>Describe your business type <span class="req">*</span></label>
+        <input type="text" name="businessTypeOther" id="businessTypeOther" placeholder="e.g. Pet Grooming, Locksmith, Tattoo Studio…" />
+        <div class="err" id="e-businessTypeOther">Please describe your business type.</div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Phone <span class="req">*</span></label>
+          <input type="tel" name="phone" placeholder="(212) 555-0100" required />
+          <div class="err" id="e-phone">Required.</div>
+        </div>
+        <div class="field">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" name="email" placeholder="hello@yourbiz.com" required />
+          <div class="err" id="e-email">Required.</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>City / Location <span class="req">*</span></label>
+          <input type="text" name="city" placeholder="e.g. New York, NY" required />
+          <div class="err" id="e-city">Required.</div>
+        </div>
+        <div class="field">
+          <label>Existing Website <span class="opt">optional</span></label>
+          <input type="url" name="existingWebsite" placeholder="https://example.com" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Services & Area -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">2</div>
+        <div class="section-title">Services & Coverage</div>
+      </div>
+
+      <div class="field">
+        <label>Services you offer <span class="req">*</span></label>
+        <p class="hint" style="margin-bottom:8px">Each item becomes its own page — be specific for better Google rankings.</p>
+        <div class="repeater" id="servicesRep">
+          <div class="rep-item"><input type="text" name="service[]" placeholder="e.g. Window Graphics" required /><button type="button" class="btn-rm" onclick="rmItem(this)">×</button></div>
+          <div class="rep-item"><input type="text" name="service[]" placeholder="e.g. Vehicle Wraps" /><button type="button" class="btn-rm" onclick="rmItem(this)">×</button></div>
+          <div class="rep-item"><input type="text" name="service[]" placeholder="e.g. LED Signs" /><button type="button" class="btn-rm" onclick="rmItem(this)">×</button></div>
+        </div>
+        <button type="button" class="btn-add" onclick="addItem('servicesRep','service[]','e.g. Lobby Signs')">+ Add service</button>
+        <div class="err" id="e-services">Add at least one service.</div>
+      </div>
+
+      <div class="field">
+        <label>Areas / Neighborhoods Served <span class="req">*</span></label>
+        <div class="repeater" id="areasRep">
+          <div class="rep-item"><input type="text" name="area[]" placeholder="e.g. Manhattan" required /><button type="button" class="btn-rm" onclick="rmItem(this)">×</button></div>
+          <div class="rep-item"><input type="text" name="area[]" placeholder="e.g. Brooklyn" /><button type="button" class="btn-rm" onclick="rmItem(this)">×</button></div>
+        </div>
+        <button type="button" class="btn-add" onclick="addItem('areasRep','area[]','e.g. Queens')">+ Add area</button>
+        <div class="err" id="e-areas">Add at least one area.</div>
+      </div>
+    </div>
+
+    <!-- 3. Brand -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">3</div>
+        <div class="section-title">Brand & Design</div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Primary Brand Color <span class="req">*</span></label>
+          <div class="color-row">
+            <input type="color" id="cp1" value="#111111" oninput="syncColor(this,'pc')" />
+            <input type="text" name="primaryColor" id="pc" value="#111111" placeholder="#111111" oninput="syncPicker(this,'cp1')" required />
+          </div>
+          <div class="err" id="e-primaryColor">Required.</div>
+        </div>
+        <div class="field">
+          <label>Secondary Color <span class="opt">optional</span></label>
+          <div class="color-row">
+            <input type="color" id="cp2" value="#ffffff" oninput="syncColor(this,'sc')" />
+            <input type="text" name="secondaryColor" id="sc" value="#ffffff" placeholder="#ffffff" oninput="syncPicker(this,'cp2')" />
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Design Feel <span class="req">*</span></label>
+        <div class="pills" id="feelPills">
+          <label class="pill-label"><input type="checkbox" name="feel[]" value="Bold & High-Contrast" onchange="togglePill(this)" />Bold & High-Contrast</label>
+          <label class="pill-label"><input type="checkbox" name="feel[]" value="Clean & Minimal" onchange="togglePill(this)" />Clean & Minimal</label>
+          <label class="pill-label"><input type="checkbox" name="feel[]" value="Luxury / Premium" onchange="togglePill(this)" />Luxury / Premium</label>
+          <label class="pill-label"><input type="checkbox" name="feel[]" value="Industrial / Gritty" onchange="togglePill(this)" />Industrial / Gritty</label>
+          <label class="pill-label"><input type="checkbox" name="feel[]" value="Friendly & Approachable" onchange="togglePill(this)" />Friendly & Approachable</label>
+          <label class="pill-label"><input type="checkbox" name="feel[]" value="Corporate / Professional" onchange="togglePill(this)" />Corporate / Professional</label>
+          <label class="pill-label"><input type="checkbox" name="feel[]" value="Modern / Tech" onchange="togglePill(this)" />Modern / Tech</label>
+          <label class="pill-label"><input type="checkbox" name="feel[]" value="Retro / Vintage" onchange="togglePill(this)" />Retro / Vintage</label>
+        </div>
+        <div class="err" id="e-feel">Pick at least one.</div>
+      </div>
+
+      <div class="field">
+        <label>Do you have a logo? <span class="req">*</span></label>
+        <select name="hasLogo" required>
+          <option value="">Select…</option>
+          <option value="yes-vector">Yes — vector file (AI, EPS, SVG)</option>
+          <option value="yes-png">Yes — PNG or JPG only</option>
+          <option value="no-need">No — I need one designed</option>
+          <option value="no-wordmark">No — use business name as text</option>
+        </select>
+        <p class="hint">Send logo files by WhatsApp or email after submitting — no upload needed here.</p>
+        <div class="err" id="e-hasLogo">Required.</div>
+      </div>
+
+      <div class="field">
+        <label>Do you have photos of your work? <span class="req">*</span></label>
+        <select name="hasPhotos" required>
+          <option value="">Select…</option>
+          <option value="yes-plenty">Yes — plenty of good photos</option>
+          <option value="yes-few">Yes — a few</option>
+          <option value="no-stock">No — use stock photos</option>
+          <option value="no-shoot">No — let's organize a shoot</option>
+        </select>
+        <p class="hint">Send photos via WhatsApp or Google Drive link after submitting.</p>
+        <div class="err" id="e-hasPhotos">Required.</div>
+      </div>
+    </div>
+
+    <!-- 4. About -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">4</div>
+        <div class="section-title">About You</div>
+      </div>
+
+      <div class="field">
+        <label>Tell us your story <span class="req">*</span></label>
+        <textarea name="story" placeholder="How did you start? What makes you different? Anything you're proud of?" required></textarea>
+        <div class="err" id="e-story">Required.</div>
+      </div>
+
+      <div class="field">
+        <label>Why should customers choose you? <span class="req">*</span></label>
+        <textarea name="differentiators" placeholder="e.g. Same-day turnaround, 25 years experience, lowest price guarantee, free design service…" required></textarea>
+        <div class="err" id="e-differentiators">Required.</div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Projects / Jobs Completed <span class="opt">optional</span></label>
+          <input type="text" name="projectsCompleted" placeholder='e.g. "500+" or "6,700+"' />
+          <p class="hint">Used as a trust number on the homepage.</p>
+        </div>
+        <div class="field">
+          <label>A Customer Testimonial <span class="opt">optional</span></label>
+          <input type="text" name="testimonial" placeholder='"Great work!" — Maria S., Brooklyn' />
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Wrap-up -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-num">5</div>
+        <div class="section-title">Wrap-up</div>
+      </div>
+
+      <div class="field">
+        <label>How do you want customers to reach you? <span class="req">*</span></label>
+        <div class="pills">
+          <label class="pill-label"><input type="checkbox" name="contact[]" value="Phone Call" onchange="togglePill(this)" />Phone Call</label>
+          <label class="pill-label"><input type="checkbox" name="contact[]" value="WhatsApp" onchange="togglePill(this)" />WhatsApp</label>
+          <label class="pill-label"><input type="checkbox" name="contact[]" value="Email" onchange="togglePill(this)" />Email</label>
+          <label class="pill-label"><input type="checkbox" name="contact[]" value="Web Form" onchange="togglePill(this)" />Web Form</label>
+        </div>
+        <div class="err" id="e-contact">Pick at least one.</div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label>Timeline <span class="opt">optional</span></label>
+          <select name="timeline">
+            <option value="">No rush</option>
+            <option>ASAP — within 1 week</option>
+            <option>Within 2 weeks</option>
+            <option>Within a month</option>
+            <option>1–3 months</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>WhatsApp Number <span class="opt">optional</span></label>
+          <input type="tel" name="whatsapp" placeholder="+1 (917) 555-0100" />
+          <p class="hint">We'll add a floating WhatsApp button.</p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Anything else we should know? <span class="opt">optional</span></label>
+        <textarea name="extraNotes" placeholder="Special pages, integrations, things to avoid, questions…" style="min-height:70px"></textarea>
+      </div>
+
+      <div class="field">
+        <label>Your Name <span class="req">*</span></label>
+        <input type="text" name="contactName" placeholder="e.g. Ahmed Hassan" required />
+        <div class="err" id="e-contactName">Required.</div>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="submit-box">
+      <h3>Ready to go?</h3>
+      <p>We'll review your answers and follow up within 24 hours.</p>
+      <button type="button" class="btn-primary" id="submitBtn" onclick="submitForm()">
+        <span id="submitLabel">Submit</span>
+        <svg id="submitSpinner" style="display:none;animation:spin 0.7s linear infinite" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+      </button>
+      <button type="button" class="btn-sec" onclick="saveDraft()">Save Draft</button>
+      <p id="submitError" style="display:none;color:var(--red);font-size:13px;margin-top:14px"></p>
+    </div>
+
+  </form>
+
+  <!-- Thank you screen (hidden until submission) -->
+  <div id="thankYou" style="display:none;text-align:center;padding:60px 20px">
+    <div style="font-size:48px;margin-bottom:20px">✅</div>
+    <h2 style="font-size:26px;font-weight:700;letter-spacing:-0.02em;margin-bottom:12px">We got your details!</h2>
+    <p style="font-size:15px;color:var(--mid);max-width:400px;margin:0 auto 28px;line-height:1.7">Thanks for filling this out. We'll review everything and reach out within <strong>24 hours</strong> to get started.</p>
+    <p style="font-size:13px;color:var(--light)">You can close this tab now.</p>
+  </div>
+</div>
+
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+<script>
+// ── CONFIG — fill in your EmailJS credentials ─────────────────────
+const EMAILJS_PUBLIC_KEY  = 'GeBI1jWAmJns60K_x';
+const EMAILJS_SERVICE_ID  = 'service_ukvgpjc';
+const EMAILJS_TEMPLATE_ID = 'template_4men0fg';
+// ─────────────────────────────────────────────────────────────────
+
+// Other business type toggle
+function toggleOtherType() {
+  const sel = document.getElementById('businessTypeSelect');
+  const field = document.getElementById('otherTypeField');
+  const input = document.getElementById('businessTypeOther');
+  const isOther = sel.value === 'Other';
+  field.style.display = isOther ? 'block' : 'none';
+  input.required = isOther;
+  if (!isOther) { input.value = ''; input.classList.remove('invalid'); document.getElementById('e-businessTypeOther').classList.remove('show'); }
+}
+
+// Progress
+function progress() {
+  const req = [...document.querySelectorAll('[required]')];
+  const filled = req.filter(e => e.value && e.value.trim()).length;
+  document.getElementById('progressBar').style.width = Math.round(filled / req.length * 100) + '%';
+}
+document.getElementById('form').addEventListener('input', progress);
+document.getElementById('form').addEventListener('change', progress);
+
+// Pills
+function togglePill(cb) {
+  cb.closest('.pill-label').classList.toggle('checked', cb.checked);
+}
+
+// Color sync
+function syncColor(picker, textId) { document.getElementById(textId).value = picker.value; }
+function syncPicker(input, pickerId) {
+  if (/^#[0-9a-fA-F]{6}$/.test(input.value.trim())) document.getElementById(pickerId).value = input.value.trim();
+}
+
+// Repeater
+function addItem(repId, name, ph) {
+  const rep = document.getElementById(repId);
+  const d = document.createElement('div');
+  d.className = 'rep-item';
+  d.innerHTML = `<input type="text" name="${name}" placeholder="${ph}" /><button type="button" class="btn-rm" onclick="rmItem(this)">×</button>`;
+  rep.appendChild(d);
+}
+function rmItem(btn) {
+  const rep = btn.closest('.repeater');
+  if (rep.children.length <= 1) { btn.previousElementSibling.value = ''; return; }
+  btn.closest('.rep-item').remove();
+}
+
+// Draft
+function saveDraft() {
+  const d = {};
+  new FormData(document.getElementById('form')).forEach((v,k) => { d[k] = d[k] ? [].concat(d[k],v) : v; });
+  localStorage.setItem('se_draft', JSON.stringify(d));
+  alert('Draft saved locally — answers will restore next time you open this form.');
+}
+window.addEventListener('load', () => {
+  const dr = localStorage.getItem('se_draft');
+  if (!dr) return;
+  if (!confirm('Restore your saved draft?')) return;
+  const d = JSON.parse(dr);
+  Object.entries(d).forEach(([k,v]) => {
+    document.querySelectorAll(`[name="${k}"], [name="${k}[]"]`).forEach((el,i) => {
+      const vals = [].concat(v);
+      if (vals[i] !== undefined) el.value = vals[i];
+    });
+  });
+  document.querySelectorAll('.pill-label input[type="checkbox"]').forEach(cb => {
+    cb.closest('.pill-label').classList.toggle('checked', cb.checked);
+  });
+});
+
+// Validation
+function g(n) { const e = document.querySelector(`[name="${n}"]`); return e ? e.value.trim() : ''; }
+function ga(n) { return [...document.querySelectorAll(`[name="${n}"]`)].map(e=>e.value.trim()).filter(Boolean); }
+function gc(n) { return [...document.querySelectorAll(`[name="${n}"]:checked`)].map(e=>e.value); }
+
+function validate() {
+  let ok = true;
+  [['businessName','e-businessName'],['businessType','e-businessType'],['phone','e-phone'],
+   ['email','e-email'],['city','e-city'],['primaryColor','e-primaryColor'],
+   ['story','e-story'],['differentiators','e-differentiators'],['contactName','e-contactName'],
+   ['hasLogo','e-hasLogo'],['hasPhotos','e-hasPhotos'],
+   ...(document.getElementById('businessTypeSelect').value === 'Other' ? [['businessTypeOther','e-businessTypeOther']] : [])
+  ].forEach(([name, errId]) => {
+    const el = document.querySelector(`[name="${name}"]`);
+    const err = document.getElementById(errId);
+    const empty = !el || !el.value.trim();
+    err.classList.toggle('show', empty);
+    if (el) el.classList.toggle('invalid', empty);
+    if (empty) ok = false;
+  });
+  const sv = ga('service[]');
+  document.getElementById('e-services').classList.toggle('show', !sv.length);
+  if (!sv.length) ok = false;
+  const av = ga('area[]');
+  document.getElementById('e-areas').classList.toggle('show', !av.length);
+  if (!av.length) ok = false;
+  const fv = gc('feel[]');
+  document.getElementById('e-feel').classList.toggle('show', !fv.length);
+  if (!fv.length) ok = false;
+  const cv = gc('contact[]');
+  document.getElementById('e-contact').classList.toggle('show', !cv.length);
+  if (!cv.length) ok = false;
+  return ok;
+}
+
+async function submitForm() {
+  if (!validate()) {
+    document.querySelector('.err.show')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const services = ga('service[]');
+  const areas    = ga('area[]');
+  const feels    = gc('feel[]');
+  const contacts = gc('contact[]');
+  const bizType  = g('businessType') === 'Other' ? (g('businessTypeOther') || 'Other') : g('businessType');
+
+  // Build a readable summary to send as the email body
+  const summary = `PROJECT INTAKE — ScaleEveryday
+Submitted: ${new Date().toLocaleString()}
+
+BUSINESS
+Name:         ${g('businessName')}
+Type:         ${bizType}
+Founded:      ${g('yearFounded') || '—'}
+Phone:        ${g('phone')}
+Email:        ${g('email')}
+City:         ${g('city')}
+Current Site: ${g('existingWebsite') || 'None'}
+
+SERVICES
+${services.map((s,i) => `${i+1}. ${s}`).join('\n')}
+
+AREAS SERVED
+${areas.map(a => '· ' + a).join('\n')}
+
+BRAND
+Primary Color:   ${g('primaryColor')}
+Secondary Color: ${g('secondaryColor') || '—'}
+Design Feel:     ${feels.join(', ')}
+Logo:            ${g('hasLogo')}
+Photos:          ${g('hasPhotos')}
+
+ABOUT
+Story:
+${g('story')}
+
+Why Choose Us:
+${g('differentiators')}
+
+Projects Completed: ${g('projectsCompleted') || '—'}
+Testimonial: ${g('testimonial') || '—'}
+
+WRAP-UP
+Preferred Contact: ${contacts.join(', ')}
+WhatsApp:   ${g('whatsapp') || '—'}
+Timeline:   ${g('timeline') || 'No rush'}
+Notes:      ${g('extraNotes') || '—'}
+
+Submitted by: ${g('contactName')}`;
+
+  // Show loading state
+  const btn = document.getElementById('submitBtn');
+  document.getElementById('submitLabel').textContent = 'Sending…';
+  document.getElementById('submitSpinner').style.display = 'inline-block';
+  btn.disabled = true;
+  document.getElementById('submitError').style.display = 'none';
+
+  if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    // Dev mode — simulate success so you can test the UI flow
+    await new Promise(r => setTimeout(r, 1000));
+    showThankYou();
+    return;
+  }
+
+  try {
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      subject:           `New Project Intake — ${g('businessName')} (${bizType})`,
+      from_name:         g('contactName'),
+      reply_to:          g('email'),
+      summary,
+      business_name:     g('businessName'),
+      business_type:     bizType,
+      phone:             g('phone'),
+      client_email:      g('email'),
+      city:              g('city'),
+      existing_website:  g('existingWebsite') || '—',
+      services:          services.join(', '),
+      areas_served:      areas.join(', '),
+      primary_color:     g('primaryColor'),
+      secondary_color:   g('secondaryColor') || '—',
+      design_feel:       feels.join(', '),
+      has_logo:          g('hasLogo'),
+      has_photos:        g('hasPhotos'),
+      story:             g('story'),
+      differentiators:   g('differentiators'),
+      projects_completed:g('projectsCompleted') || '—',
+      testimonial:       g('testimonial') || '—',
+      preferred_contact: contacts.join(', '),
+      whatsapp:          g('whatsapp') || '—',
+      timeline:          g('timeline') || 'No rush',
+      notes:             g('extraNotes') || '—',
+      submitted_by:      g('contactName'),
+    });
+
+    localStorage.removeItem('se_draft');
+    showThankYou();
+  } catch (err) {
+    document.getElementById('submitLabel').textContent = 'Submit';
+    document.getElementById('submitSpinner').style.display = 'none';
+    btn.disabled = false;
+    const errEl = document.getElementById('submitError');
+    errEl.textContent = 'Something went wrong. Please try again or contact us directly.';
+    errEl.style.display = 'block';
+    console.error('EmailJS error:', err);
+  }
+}
+
+function showThankYou() {
+  document.getElementById('form').style.display = 'none';
+  document.querySelector('.intro').style.display = 'none';
+  document.getElementById('thankYou').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+</script>
+</body>
+</html>
